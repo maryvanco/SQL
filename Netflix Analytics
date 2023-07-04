@@ -95,7 +95,7 @@ ON people.show_id=title.show_id
 WHERE people.cast like '%Melissa McCarthy%' 
 AND title.type=‘Movie';
 
--- How many TV Shows in the database have 1 season?
+-- How many TV Shows in the database have exactly 1 season?
 SELECT title, type, duration
 FROM "netflix_titles_info"
 WHERE type= 'TV Show'
