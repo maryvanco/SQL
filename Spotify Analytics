@@ -1,0 +1,69 @@
+--This project explores the top 50 songs on Spotify in 2021. This data was gathered from Kaggle. 
+--(https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021?select=spotify_top50_2021.csv)
+
+
+--Divide popularity into groups
+SELECT track_name, artist_name, popularity, 
+    CASE 
+        when popularity >90 then "very high"
+        when popularity >80 then "high"
+        when popularity >70 then "medium"
+        else "low"
+        END as popularity_groups
+ FROM spotifydata;
+ 
+
+--What is the average danceability and energy of each popularity group?
+SELECT avg(danceability), avg(energy),
+    CASE 
+        when popularity >90 then "very high"
+        when popularity >80 then "high"
+        when popularity >70 then "medium"
+        else "low"
+        END as popularity_groups
+ FROM spotifydata
+ GROUP BY popularity_groups;
+ 
+
+--What are the three most common song keys in this data?
+SELECT song_key, count(song_key) as value_occurrence
+FROM spotifydata
+GROUP BY song_key
+ORDER BY value_occurrence desc LIMIT 3;
+
+
+--What 5 songs have the highest tempo and which 5 have the lowest tempo?
+SELECT track_name, tempo from spotifydata 
+ORDER BY tempo desc LIMIT 5;
+SELECT track_name, tempo from spotifydata
+ORDER BY tempo asc LIMIT 5;
+
+
+--What is the average popularity of Olivia Rodigo's songs in the database?
+SELECT artist_name, avg(popularity) 
+FROM spotifydata
+WHERE artist_name= "Olivia Rodrigo";
+
+
+--What is the longest song and who sings it?
+SELECT track_name, artist_name, MAX(duration_ms) 
+FROM spotifydata;
+
+
+--What percentage of songs have liveness greater than 0.4?
+SELECT count(track_name)*100/50
+FROM spotifydata
+WHERE liveness > 0.4;
+
+
+--Calculate the average popularity for the artists in the Spotify data table. Then, for every artist with an average popularity of 90 or above, show their name, their average popularity, and label them as a “Top Star”.
+WITH CTE_avgpop AS
+ (
+SELECT
+s.artist_name, avg(s.popularity) as avg_popularity
+FROM spotifydata s
+GROUP BY s.artist_name)
+SELECT 
+artist_name, avg_popularity, 'Top Star' as tag
+FROM CTE_avgpop
+WHERE avg_popularity >=90;
