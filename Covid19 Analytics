@@ -1,0 +1,94 @@
+--In this project I analyzed COVID19 data from ourworldindata.org/covid-deaths. 
+
+SELECT *
+From CovidDeaths
+WHERE continent is not ““
+ORDER BY 3,4;
+
+
+-- Total Cases vs Total Deaths
+-- Shows likelihood of dying if you contract covid in your country
+SELECT location, date, total_cases, total_deaths, 
+(total_deaths*100/total_cases) as DeathPercentage
+from CovidDeaths
+WHERE location = "United States”
+And continent is not ““
+ORDER BY 1,2;
+
+
+-- Looking at Total Cases vs Population
+-- Shows what percentage of population infected with Covid
+SELECT location, date, population, total_cases, 
+(total_cases*100/population) as PercentPopulationInfected
+from CovidDeaths
+ORDER BY 1,2;
+
+
+--Countries with Highest Infection Rate compared to population
+SELECT location, population, MAX(total_cases) as HighestInfectionCount
+, MAX((total_cases*100/population)) as PercentPopulationInfected
+from CovidDeaths
+GROUP BY location, population
+ORDER BY PercentPopulationInfected desc;
+
+
+-- Countries with Highest Death Count per population
+SELECT location, MAX(cast(total_deaths as int)) as TotalDeathCount
+from CovidDeaths
+WHERE continent is not ""
+GROUP BY location
+ORDER BY TotalDeathCount desc;
+
+
+--Continents with the highest death count per population
+SELECT continent, MAX(cast(total_deaths as int)) as TotalDeathCount
+from CovidDeaths
+WHERE continent is not ""
+GROUP BY continent
+ORDER BY TotalDeathCount desc;
+
+
+--Global Numbers (Total)
+SELECT SUM(new_cases) as total_cases, SUM(new_deaths) as total_deaths,
+SUM(new_deaths)/SUM(new_cases)*100 as DeathPercentage
+from CovidDeaths
+WHERE continent is not ""
+order by 1,2;
+
+
+--Global Numbers (per day)
+SELECT date, SUM(new_cases) as total_cases, SUM(new_deaths) as total_deaths,
+SUM(new_deaths)/SUM(new_cases)*100 as DeathPercentage
+from CovidDeaths
+WHERE continent is not ""
+GROUP BY date
+order by 1,2;
+
+
+-- Total Population vs Vaccinations
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+, SUM(CONVERT(int, vac.new_vaccinations)) OVER (partition by dea.location order by dea.location,  dea.date) as RollingPeopleVac
+FROM BIT_DB.CovidDeaths dea
+JOIN BIT_DB.CovidVaccinations vac
+    on dea.location = vac.location
+    and dea.date = vac.date
+WHERE dea.continent is not ""
+ORDER BY 2,3;
+
+
+-- Using a CTE to look at the rolling percentage of people vaccinated
+WITH PopvsVac (continent, location, date, population, new_vaccinations, RollingPeopleVac) as
+(
+SELECT dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+, SUM(CONVERT(int, vac.new_vaccinations)) OVER (partition by dea.location order by dea.location, dea.date) as RollingPeopleVac
+FROM BIT_DB.CovidDeaths dea
+JOIN BIT_DB.CovidVaccinations vac
+    on dea.location = vac.location
+    and dea.date = vac.date
+WHERE dea.continent is not ""
+)
+SELECT *, (RollingPeopleVac*100/population)
+FROM PopvsVac;
+
+    
+    
