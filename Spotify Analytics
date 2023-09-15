@@ -1,5 +1,5 @@
---This project explores the top 50 songs on Spotify in 2021. This data was gathered from Kaggle. 
---(https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021?select=spotify_top50_2021.csv)
+/*This project explores the top 50 songs on Spotify in 2021. This data was gathered from Kaggle. 
+(https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021?select=spotify_top50_2021.csv) */
 
 
 --Divide popularity into groups
