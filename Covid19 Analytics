@@ -1,4 +1,5 @@
---In this project I analyzed COVID19 data from ourworldindata.org/covid-deaths. 
+/*In this project I analyzed COVID19 data from ourworldindata.org/covid-deaths. 
+Some of the skills I demonstrate in this analysis are Joins, CTE's, Temp Tables, Windows Functions, Aggregate Functions, Creating Views, Converting Data Types*/
 
 SELECT *
 From CovidDeaths
