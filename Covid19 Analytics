@@ -88,7 +88,7 @@ JOIN BIT_DB.CovidVaccinations vac
     and dea.date = vac.date
 WHERE dea.continent is not ""
 )
-SELECT *, (RollingPeopleVac*100/population)
+SELECT continent, location, date, population, new_vaccinations, RollingPeopleVac, (RollingPeopleVac*100/population)
 FROM PopvsVac;
 
  
