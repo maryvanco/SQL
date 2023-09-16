@@ -92,3 +92,20 @@ SELECT product, sum(quantity*price) AS revenue
 FROM BIT_DB.FebSales feb
 GROUP BY product
 ORDER BY revenue desc LIMIT 1;
+
+#How many products were sold on each day of February? Order the results by the number of products.
+SELECT substr(orderdate, 1, 8) as date, count(quantity) total_product
+from febsales
+WHERE date <> "Order Da" AND length(date) = 8 AND substr(date, 2, 1) <> "3"
+GROUP BY date
+ORDER BY total_product desc;
+
+#Which state sold the most iPhones in January?
+SELECT substr(location, -8, 2) as state, product, count(quantity) as total_quantity
+from jansales
+WHERE length(orderid) = 6 AND product = "iPhone"
+GROUP BY state, product
+ORDER BY total_quantity desc
+LIMIT 1;
+
+
