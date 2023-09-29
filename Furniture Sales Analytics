@@ -96,6 +96,22 @@ FROM products pro
 LEFT OUTER JOIN sales sal ON pro.product=sal.product
 WHERE ID is null;
 
+--All products listed and categorized by total sales
+with cte as (
+SELECT pro.product as product, sum(price) as total_sales
+FROM products pro
+LEFT OUTER JOIN sales sal ON pro.product=sal.product
+GROUP BY pro.product)
+
+SELECT product, total_sales
+, CASE
+    when total_sales > 100000 then 'Very High'
+    when total_sales > 60000 then 'High'
+    when total_sales > 20000 then 'Medium'
+    else 'low' end as sales_category
+FROM cte
+ORDER BY total_sales desc;
+
 
 /* Supplier */
 
